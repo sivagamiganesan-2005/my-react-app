@@ -1,62 +1,62 @@
-import React, { useState } from "react";
-
-// 🔹 Component + Props
-function StudentCard({ name, course, status }) {
-  return (
-    <div style={{ border: "1px solid black", padding: "10px", margin: "10px" }}>
-      <h3>{name}</h3>
-      <p>Course: {course}</p>
-      <p>Status: {status}</p>
-    </div>
-  );
-}
+import React, { useState, useEffect } from "react";
 
 function App() {
-  // 🔹 State
-  const [name, setName] = useState("");
-  const [course, setCourse] = useState("");
+  // 🔹 List (5 students)
+  const [students, setStudents] = useState([
+    "Arun",
+    "Bala",
+    "Chitra",
+    "Divya",
+    "Ezhil"
+  ]);
 
-  // 🔹 Event Handling (Form submit)
-  const handleSubmit = () => {
-    console.log("Name:", name);
-    console.log("Course:", course);
+  // 🔹 Input state
+  const [name, setName] = useState("");
+
+  // 🔹 API data
+  const [users, setUsers] = useState([]);
+
+  // 🔹 Fetch API
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((res) => res.json())
+      .then((data) => setUsers(data));
+  }, []);
+
+  // 🔹 Add new student
+  const addStudent = () => {
+    if (name.trim() === "") return;
+    setStudents([...students, name]);
+    setName("");
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Day 1 - React Basics</h1>
+      <h1>Day 2 - React</h1>
 
-      {/* 🔹 Form UI */}
+      {/* 🔹 List Rendering + Keys */}
+      <h2>Student List</h2>
+      {students.map((student, index) => (
+        <p key={index}>{student}</p>
+      ))}
+
+      {/* 🔹 Form Submit */}
+      <h2>Add Student</h2>
       <input
         type="text"
-        placeholder="Enter Name"
+        placeholder="Enter name"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-
-      <br /><br />
-
-      <input
-        type="text"
-        placeholder="Enter Course"
-        value={course}
-        onChange={(e) => setCourse(e.target.value)}
-      />
-
-      <br /><br />
-
-      <button onClick={handleSubmit}>Submit</button>
+      <button onClick={addStudent}>Add</button>
 
       <hr />
 
-      {/* 🔹 Component Usage */}
-      <h2>Preview</h2>
-
-      <StudentCard
-        name={name}
-        course={course}
-        status="Active"
-      />
+      {/* 🔹 Fetch API */}
+      <h2>Users from API</h2>
+      {users.map((user) => (
+        <p key={user.id}>{user.name}</p>
+      ))}
     </div>
   );
 }
